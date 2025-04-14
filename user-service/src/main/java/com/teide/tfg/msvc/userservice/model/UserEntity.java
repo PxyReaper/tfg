@@ -2,13 +2,18 @@ package com.teide.tfg.msvc.userservice.model;
 
 import com.teide.tfg.msvc.userservice.enums.UserGenero;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Set;
 
 @Table(name = "usuarios")
 @Entity
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,5 +30,12 @@ public class UserEntity {
     private UserGenero genero;
     @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
+   @ManyToMany(fetch = FetchType.LAZY)
+   @JoinTable(
+           name = "usuarios_rol",
+           joinColumns = @JoinColumn(name = "id_usuario",referencedColumnName = "id_usuario"),
+           inverseJoinColumns = @JoinColumn(name = "id_rol",referencedColumnName = "id_rol")
+   )
+    private Set<RoleEntity> roles;
 
 }
