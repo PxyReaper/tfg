@@ -29,6 +29,7 @@ public class UserEntity {
     private String contraseña;
     private UserGenero genero;
     @Column(name = "fecha_nacimiento")
+    @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
    @ManyToMany(fetch = FetchType.EAGER)
    @JoinTable(

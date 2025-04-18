@@ -1,5 +1,6 @@
 package com.teide.tfg.msvc.userservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.teide.tfg.msvc.userservice.enums.UserGenero;
@@ -23,7 +24,9 @@ public class UserDto {
     private String provincia;
     private String email;
     private String usuario;
+    private String contraseña;
     private UserGenero genero;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaNacimiento;
     private Set<RoleDto> roles;
 
