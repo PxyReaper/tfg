@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**  # Aquí no debe haber un espacio después del guion.
+          filters:
+            - StripPrefix=2
