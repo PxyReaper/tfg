@@ -9,6 +9,7 @@ import com.teide.tfg.msvc.userservice.repository.RoleRepository;
 import com.teide.tfg.msvc.userservice.repository.UserRepository;
 import com.teide.tfg.msvc.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
     @Transactional
     @Override
     public UserDto findById(String id) {
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService {
         RoleEntity role = this.roleRepository.findRoleEntitiesByTipoIgnoreCase("USER");
         UserEntity userEntity = UserEntityConverter.convertUserDtoToUserEntity(userDto);
         userEntity.getRoles().add(role);
+        userEntity.setContraseña(passwordEncoder.encode(userEntity.getContraseña()));
 
         this.userRepository.save(userEntity);
     }
