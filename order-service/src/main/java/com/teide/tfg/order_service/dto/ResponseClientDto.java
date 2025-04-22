@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class ResponseClientDto {
+public class ResponseClientDto extends  StatusDto{
     private UserDto  result;
-    private String message;
-    private int status;
+    public ResponseClientDto(UserDto result, String message, int status){
+        super(message,status);
+        this.result = result;
+    }
+
 }
