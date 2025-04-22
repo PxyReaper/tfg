@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IOrderService {
     public List<OrderDto> findALl();
-    public OrderDto findById();
-    public OrderDto  findByMail();
+    public OrderDto findById(Long id);
+    public OrderDto  findByMail(String mail);
 }
