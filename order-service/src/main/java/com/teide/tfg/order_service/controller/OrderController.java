@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class OrderController {
@@ -22,9 +24,14 @@ public class OrderController {
     }
 
 
+    @GetMapping
+    public ResponseEntity<ResponseDto<List<OrderDto>>> findALl(){
+        List<OrderDto> orderDtos = orderService.findALl();
+        ResponseDto<List<OrderDto>> response =getResponseDtoByParameters(orderDtos,null,200);
+        return  ResponseEntity.ok(response);
+    }
 
-
-    private ResponseDto<OrderDto> getResponseDtoByParameters(OrderDto orderDto,String message,int status){
+    private <T>ResponseDto<T> getResponseDtoByParameters(T orderDto,String message,int status){
         return new ResponseDto<>(orderDto,message,status);
     }
 }
