@@ -61,4 +61,16 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.deleteById(id);
     }
+
+    @Override
+    public UserDto findUserByEmail(String email) {
+        Optional<UserEntity> userEntity = this.userRepository.findUserEntityByEmail(email);
+        if(!userEntity.isPresent()){
+            throw  new UserNameNotFoundException("Usuario con el correo  "+ email + " no encontrado");
+
+        }
+
+        return UserEntityConverter.convertUserEntityToUserDto(userEntity.get());
+    }
+
 }

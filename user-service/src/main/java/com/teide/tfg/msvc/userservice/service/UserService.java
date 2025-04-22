@@ -7,4 +7,5 @@ public interface UserService {
     public void save(UserDto userDto);
     public void update(UserDto userDto,String id);
     public void delete(String id);
+    public UserDto findUserByEmail(String email);
 }

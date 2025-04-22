@@ -14,12 +14,18 @@ import java.net.URISyntaxException;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<ResponseDTO<UserDto>> findById(@PathVariable String id) {
         UserDto userDto = userService.findById(id);
         ResponseDTO<UserDto> responseDTO = new ResponseDTO<>(userDto, HttpStatus.OK.value(),"Usuario encontrado exitosamente");
         return ResponseEntity.ok(responseDTO);
 
+    }
+    @GetMapping("/mail/{mail}")
+    public ResponseEntity<ResponseDTO<UserDto>> findByMail(@PathVariable String mail){
+        UserDto userDto = userService.findUserByEmail(mail);
+        ResponseDTO<UserDto> response = new ResponseDTO<>(userDto,HttpStatus.OK.value(),"Usuario encontrado exitosamente");
+        return  ResponseEntity.ok(response);
     }
 
     @PostMapping
