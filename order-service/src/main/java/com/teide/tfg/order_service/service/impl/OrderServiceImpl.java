@@ -1,12 +1,15 @@
 package com.teide.tfg.order_service.service.impl;
 
 import com.teide.tfg.order_service.dto.OrderDto;
+import com.teide.tfg.order_service.exception.OrderNotFoundByIdException;
 import com.teide.tfg.order_service.repository.OrderRepository;
 import com.teide.tfg.order_service.service.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements IOrderService {
@@ -18,12 +21,16 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public OrderDto findById(Long id) {
-        return orderRepository.findOrderWithMailById(id).orElseThrow(RuntimeException::new);
+        Optional<OrderDto> order =  orderRepository.findOrderWithMailById(id);
+        order.orElseThrow(() -> new OrderNotFoundByIdException("Producto no encontrado por el id proporcionado"));
+        return  order.get();
     }
 
     @Override
     public OrderDto findByMail(String mail) {
-        return orderRepository.findOrderWithMailByMail(mail).orElseThrow(RuntimeException::new);
+        Optional<OrderDto> order =  orderRepository.findOrderWithMailByMail(mail);
+        order.orElseThrow(() -> new OrderNotFoundByIdException("Producto no encontrado por el mail proporcionado"));
+        return  order.get();
 
     }
 }
