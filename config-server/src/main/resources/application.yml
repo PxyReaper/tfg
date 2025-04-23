@@ -1,0 +1,13 @@
+server:
+  port: 8888  # El puerto típico para un config server
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/PxyReaper/config-service.git
+          username: PXyReaper
+          password: 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
+          clone-on-start: true
+          default-label: master   # <-- Aquí bien indentado bajo git
