@@ -2,6 +2,7 @@ package com.teide.tfg.order_service.controller;
 
 import com.teide.tfg.order_service.dto.OrderDto;
 import com.teide.tfg.order_service.dto.ResponseDto;
+import com.teide.tfg.order_service.factory.ResponseFactory;
 import com.teide.tfg.order_service.service.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class OrderController {
     @GetMapping("/id/{id}")
     public ResponseEntity<ResponseDto<OrderDto>> findById(@PathVariable("id") Long id){
         OrderDto orderDto = orderService.findById(id);
-        ResponseDto<OrderDto> response =  getResponseDtoByParameters(orderDto,"Pedido encontrado exitosamente", HttpStatus.OK.value());
+        ResponseDto<OrderDto> response =  ResponseFactory.generateSuccesResponse(orderDto,"Pedido encontrado exitosamente", HttpStatus.OK.value());
         return ResponseEntity.ok(response);
     }
 
@@ -27,11 +28,9 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<ResponseDto<List<OrderDto>>> findALl(){
         List<OrderDto> orderDtos = orderService.findALl();
-        ResponseDto<List<OrderDto>> response =getResponseDtoByParameters(orderDtos,null,200);
+        ResponseDto<List<OrderDto>> response = ResponseFactory.generateSuccesResponse(orderDtos,null,200);
         return  ResponseEntity.ok(response);
     }
 
-    private <T>ResponseDto<T> getResponseDtoByParameters(T orderDto,String message,int status){
-        return new ResponseDto<>(orderDto,message,status);
-    }
+
 }
