@@ -71,6 +71,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws  Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     AuthenticationProvider authenticationProvider(UserService userService){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
