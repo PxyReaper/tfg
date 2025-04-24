@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +23,7 @@ public class UserService implements UserDetailsService {
         UserDto  user = this.userClient.findByMail(username).getResult();
         List<SimpleGrantedAuthority> authorities = user.getRoles()
                 .stream().map( r ->  new SimpleGrantedAuthority("ROLE_".concat(r.getTipo())))
-                .toList();
+                .collect(Collectors.toList());
        authorities.addAll(
                user.getRoles().stream()
                        .flatMap(r -> r.getPermissions().stream())

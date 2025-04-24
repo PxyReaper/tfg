@@ -22,7 +22,7 @@ public class UserEntityConverter {
         }).collect(Collectors.toSet()): new HashSet<>();
         return new UserDto(userEntity.getIdUsuario(),userEntity.getNombre(),userEntity.getApellido(),
                 userEntity.getCp(),userEntity.getCiudad(),userEntity.getProvincia(),userEntity.getEmail(),
-                userEntity.getUsuario(),null,userEntity.getGenero(),userEntity.getFechaNacimiento(),roleDto
+                userEntity.getUsuario(),userEntity.getContraseña(),userEntity.getGenero(),userEntity.getFechaNacimiento(),roleDto
                 );
 
     }

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 
 public class UserDto {
     private String idUsuario;

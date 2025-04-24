@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ResponseDTO<UserDto>> save(@RequestBody UserDto userDto) throws URISyntaxException {
         userService.save(userDto);
-        ResponseDTO<UserDto> response = new ResponseDTO<>(userDto,HttpStatus.CREATED.value(), "Usuario registrado exittosamente");
+        ResponseDTO<UserDto> response = new ResponseDTO<>(null,HttpStatus.CREATED.value(), "Usuario registrado exittosamente");
         return ResponseEntity.created( new URI("/api/users")).body(response);
     }
     @PutMapping("/{id}")

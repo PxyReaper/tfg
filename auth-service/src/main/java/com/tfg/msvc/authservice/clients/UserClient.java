@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-service")
 public interface UserClient {
-    @GetMapping("/{mail}")
+    @GetMapping("/mail/{mail}")
     public ResponseClientDto findByMail(@PathVariable String mail);
 }
