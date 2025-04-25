@@ -4,12 +4,11 @@ import com.tfg.msvc.authservice.dto.AuthDto;
 import com.tfg.msvc.authservice.dto.ResponseDto;
 import com.tfg.msvc.authservice.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +21,25 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword())
             );
             String token = jwtUtils.generateToken(auth);
-            return new ResponseDto(token, "Usuario autenticado correctamente");
+            String refreshToken = jwtUtils.generateRefreshToken(auth);
+            ResponseCookie cookie = jwtUtils.generateRefreshTokenCookie(refreshToken);
+        System.out.println(cookie != null ? "Cookie no nula": "Cookie nula");
+            return new ResponseDto(token,cookie ,"Usuario autenticado correctamente");
+
+    }
+    public ResponseDto logout(String cookieName){
+        ResponseCookie cookie = jwtUtils.generateCleanResponseCookie(cookieName);
+        return new ResponseDto(null,cookie,"Sesión del usuario cerrada correctamente");
+    }
+    public ResponseDto refreshToken(String refreshToken){
+       String username = jwtUtils.getSubject(refreshToken);
+
+       Authentication authentication = new UsernamePasswordAuthenticationToken(
+               username,null,null
+       );
+       String token = jwtUtils.generateToken(authentication);
+       return new ResponseDto(token, null, null);
+
 
     }
 }

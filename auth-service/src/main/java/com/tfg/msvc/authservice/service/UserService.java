@@ -3,7 +3,6 @@ package com.tfg.msvc.authservice.service;
 import com.tfg.msvc.authservice.clients.UserClient;
 import com.tfg.msvc.authservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
