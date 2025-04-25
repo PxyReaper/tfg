@@ -23,6 +23,8 @@ public class UserController {
     }
     @GetMapping("/mail/{mail}")
     public ResponseEntity<ResponseDTO<UserDto>> findByMail(@PathVariable String mail){
+        System.out.println("Han hecho peticion");
+        System.out.println(mail);
         UserDto userDto = userService.findUserByEmail(mail);
         ResponseDTO<UserDto> response = new ResponseDTO<>(userDto,HttpStatus.OK.value(),"Usuario encontrado exitosamente");
         return  ResponseEntity.ok(response);

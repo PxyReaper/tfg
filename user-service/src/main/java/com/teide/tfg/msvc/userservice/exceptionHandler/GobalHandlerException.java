@@ -15,7 +15,7 @@ public class GobalHandlerException {
     @ExceptionHandler(UserNameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Void> handleUsernameNotFoundException(UserNameNotFoundException ex ){
-
+        log.error(ex.getMessage(),ex.getClass());
         return ResponseEntity.notFound().build();
     }
 
