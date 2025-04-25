@@ -8,6 +8,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+    private final UserService  userService;
 
     public ResponseDto login(AuthDto  authDto){
             Authentication auth = authenticationManager.authenticate(
@@ -32,14 +35,13 @@ public class AuthService {
         return new ResponseDto(null,cookie,"Sesión del usuario cerrada correctamente");
     }
     public ResponseDto refreshToken(String refreshToken){
-       String username = jwtUtils.getSubject(refreshToken);
-
-       Authentication authentication = new UsernamePasswordAuthenticationToken(
-               username,null,null
-       );
-       String token = jwtUtils.generateToken(authentication);
-       return new ResponseDto(token, null, null);
-
+        String username = jwtUtils.getSubject(refreshToken);
+        UserDetails user = userService.loadUserByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user.getUsername(), null, user.getAuthorities()
+        );
+        String token = jwtUtils.generateToken(authentication);
+        return new ResponseDto(token, null, null);
 
     }
 }
