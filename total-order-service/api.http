@@ -1,0 +1,4 @@
+### Recuperar todas los pedidos finales
+GET http://localhost:3000/totalOrder
+### Recuperar un pedido total por id
+GET http://localhost:3000/totalOrder/?
