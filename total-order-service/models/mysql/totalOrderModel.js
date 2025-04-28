@@ -14,7 +14,7 @@ export class TotalOrderModel {
   static async getAll () {
     console.log('getAll')
 
-    const [totalOrder] = await connection.query(
+    const [rows] = await connection.query(
         `SELECT 
             cuerpo_pedido.id_pedido,
             cuerpo_pedido.id_producto,
@@ -30,7 +30,29 @@ export class TotalOrderModel {
             cuerpo_pedido.id_producto = productos.id_producto;`
     )
 
-    return totalOrder
+    // Organizar pedidos
+    const totalOrder = rows.reduce((acc, row) => {
+      const { id_pedido, id_producto, cantidad, nombre, descripcion, precio_unit } = row
+
+      if (!acc[id_pedido]) {
+        acc[id_pedido] = {
+          id_pedido,
+          productos: []
+        }
+      }
+
+      acc[id_pedido].productos.push({
+        id_producto,
+        cantidad,
+        nombre,
+        descripcion,
+        precio_unit
+      })
+
+      return acc
+    }, {})
+
+    return Object.values(totalOrder) // Devuelve un arreglo con los pedidos organizados
   }
 
   static async getById ({ id }) {
