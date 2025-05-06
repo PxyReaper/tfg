@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ResponseDto <T> extends StatusDto{
     private T result;
-    public ResponseDto(T result , String message, int status){
-        super(message,status);
+    public ResponseDto(T result , String message, int status,Integer page,Integer size,Integer totalPages){
+        super(message,status,page,size,totalPages);
         this.result = result;
 
     }

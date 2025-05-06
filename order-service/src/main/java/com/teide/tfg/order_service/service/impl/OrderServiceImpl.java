@@ -5,6 +5,9 @@ import com.teide.tfg.order_service.exception.OrderNotFoundByIdException;
 import com.teide.tfg.order_service.repository.OrderRepository;
 import com.teide.tfg.order_service.service.IOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +18,9 @@ import java.util.Optional;
 public class OrderServiceImpl implements IOrderService {
     private final OrderRepository orderRepository;
     @Override
-    public List<OrderDto> findALl() {
-        return  orderRepository.findOrdersWithMail();
+    public Page<OrderDto> findALl(int page,int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return this.orderRepository.findOrdersWithMail(pageable);
     }
 
     @Override
