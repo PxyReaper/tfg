@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ResponseClientDto extends  StatusDto{
     private UserDto  result;
     public ResponseClientDto(UserDto result, String message, int status){
-        super(message,status);
+        super(message,status,null,null,null);
         this.result = result;
     }
 

@@ -12,5 +12,8 @@ import lombok.NoArgsConstructor;
 public class StatusDto {
     private String message;
     private int status;
+    private Integer page;
+    private Integer size;
+    private Integer totalPages;
 
 }
