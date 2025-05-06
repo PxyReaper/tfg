@@ -52,7 +52,7 @@ export class TotalOrderModel {
       return acc
     }, {})
 
-    return Object.values(totalOrder) // Devuelve un arreglo con los pedidos organizados
+    return Object.values(totalOrder) // Devuelve un array con los pedidos organizados
   }
 
   static async getById ({ id }) {
