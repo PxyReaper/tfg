@@ -1,5 +1,6 @@
 import express from 'express' // require -> commonJS
 import { createTotalOrderRouter } from './routes/totalOrderRoutes.js'
+import './client/eureka-client.js'
 
 export const createApp = ({ totalOrderModel }) => {
   const app = express()
