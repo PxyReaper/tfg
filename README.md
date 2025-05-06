@@ -1,0 +1,14 @@
+# Trabajo de fin de grado  de desarrollo de aplicaciones Web en el centro TEIDE IV
+
+Este repositorio muestra el desarrollo de la aplicacion **AMAZONIAS**, la cual es la que se presentará  en la exposición del trabajo de fin de grado del actual curso 2024/2025.
+
+**Para poder hacer las pruebas en los respectivos proyectos**, primero hay que levantar tanto el servidor de configuración(**config-service**) junto con el servidor de nombre (**eureka-server**) para empezar a hacer cambios dentro de la infraestructura del proyecto.
+
+Otra cosa a tener en cuenta es en los perfiles de las aplicaciones(En el caso de las aplicaciones de Spring).En caso de que estes trabajando con la base de datos de Railway para poder obtener su configuracion: url de base de datos, usuario,contraseña...etc.
+
+Tenemos que ir a cualquiera de los proyectos que vayamos a hacer las pruebas o crear(Si son de **Spring Boot** ) y activar el profile de **dev**.
+```properties
+    spring.profiles.active=local #SI ESTA ASI, CAMBIAR EL PARAMETRO DE LOCAL A DEV
+    spring.profiles.active=dev #ALGO TAL QUE ASI
+```
+A partir de aqui podremos sin problema desarrollar y hacer cambios en nuestras aplicaciones que usen el framework de Spring.
