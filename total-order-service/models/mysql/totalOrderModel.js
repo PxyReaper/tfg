@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise'
 
 const config = {
-  host: 'shinkansen.proxy.rlwy.net',
+  host: 'localhost',
   user: 'root',
-  port: 23706,
-  password: 'hWrgMKYKnrNrkbQPXbnKobPqeZPWBSNk',
+  port: 3306,
+  password: 'root',
   database: 'railway'
 }
 

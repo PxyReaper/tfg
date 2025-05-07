@@ -1,6 +1,7 @@
 import express from 'express' // require -> commonJS
 import { createTotalOrderRouter } from './routes/totalOrderRoutes.js'
-import './client/eureka-client.js'
+import './client/eurekaClient.js'
+import { TotalOrderModel } from './models/mysql/totalOrderModel.js'
 
 export const createApp = ({ totalOrderModel }) => {
   const app = express()
@@ -14,3 +15,4 @@ export const createApp = ({ totalOrderModel }) => {
     console.log(`server listening on port http://localhost:${PORT}`)
   })
 }
+createApp({ totalOrderModel: TotalOrderModel })

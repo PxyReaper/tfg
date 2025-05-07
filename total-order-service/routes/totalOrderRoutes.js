@@ -7,6 +7,7 @@ export const createTotalOrderRouter = ({ totalOrderModel }) => {
   const totalOrderController = new TotalOrderController({ totalOrderModel })
 
   totalOrderRouter.get('/', totalOrderController.getAll)
+  totalOrderRouter.get('/test', totalOrderController.test)
   totalOrderRouter.get('/:id', totalOrderController.getById)
 
   return totalOrderRouter

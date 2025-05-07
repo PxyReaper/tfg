@@ -1,7 +1,7 @@
 import { Eureka } from 'eureka-js-client'
 
 // Configurar cliente Eureka
-const eurekaClient = new Eureka({
+export const eurekaClient = new Eureka({
   instance: {
     app: 'total-order-service',
     hostName: 'localhost',
