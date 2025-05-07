@@ -3,7 +3,7 @@ import { createTotalOrderRouter } from './routes/totalOrderRoutes.js'
 import './client/eurekaClient.js'
 import { TotalOrderModel } from './models/mysql/totalOrderModel.js'
 
-export const createApp = ({ totalOrderModel }) => {
+export const createApp = async ({ totalOrderModel }) => {
   const app = express()
   app.disable('x-powered-by')
 
@@ -15,4 +15,6 @@ export const createApp = ({ totalOrderModel }) => {
     console.log(`server listening on port http://localhost:${PORT}`)
   })
 }
-createApp({ totalOrderModel: TotalOrderModel })
+createApp({ totalOrderModel: TotalOrderModel }).catch(err => {
+  console.log(err)
+})

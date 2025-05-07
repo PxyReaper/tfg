@@ -11,4 +11,14 @@ Tenemos que ir a cualquiera de los proyectos que vayamos a hacer las pruebas o c
     spring.profiles.active=local #SI ESTA ASI, CAMBIAR EL PARAMETRO DE LOCAL A DEV
     spring.profiles.active=dev #ALGO TAL QUE ASI
 ```
+**En caso de que estes trabajando en los microservicios de ExpressJs** tienes que irte al archivo configClient.js y modificar en el config options el array de profiles y ponerlo como dev.
+```json
+const configOptions = {
+  endpoint: 'http://localhost:8888',
+  name: 'total-order-service',
+  profiles: ['local'], // AQUI CAMBIAR A DEV
+  label: 'master' 
+}
+```
+
 A partir de aqui podremos sin problema desarrollar y hacer cambios en nuestras aplicaciones que usen el framework de Spring.

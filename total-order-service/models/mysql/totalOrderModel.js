@@ -1,12 +1,7 @@
 import mysql from 'mysql2/promise'
+import { loadConfig } from '../../config/configClient.js'
 
-const config = {
-  host: 'shinkansen.proxy.rlwy.net',
-  user: 'root',
-  port: 23706,
-  password: 'hWrgMKYKnrNrkbQPXbnKobPqeZPWBSNk',
-  database: 'railway'
-}
+const config = await loadConfig()
 
 const connection = await mysql.createConnection(config)
 
