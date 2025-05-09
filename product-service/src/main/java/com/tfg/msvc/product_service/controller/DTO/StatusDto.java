@@ -2,25 +2,17 @@ package com.tfg.msvc.product_service.controller.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
-public class ProductDTO {
-
-    private long id;
-
-    private String name;
-
-    private String description;
-
-    private BigDecimal price;
+public class StatusDto {
+    private Integer page;
+    private Integer size;
+    private Integer totalPages;
+    private Integer  status;
+    private String message;
 }

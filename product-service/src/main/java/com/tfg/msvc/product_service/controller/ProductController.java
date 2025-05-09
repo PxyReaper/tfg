@@ -1,8 +1,10 @@
 package com.tfg.msvc.product_service.controller;
 
 import com.tfg.msvc.product_service.controller.DTO.ProductDTO;
+import com.tfg.msvc.product_service.controller.DTO.ResponseDto;
 import com.tfg.msvc.product_service.entities.Product;
 import com.tfg.msvc.product_service.service.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,79 +16,41 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/productos")
+@RequiredArgsConstructor
 public class ProductController {
 
-    private IProductService productService;
+    private final  IProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
-        Optional<Product> productOptional = productService.findById(id);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            ProductDTO productDTO = ProductDTO.builder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .description(product.getDescription())
-                    .price(product.getPrice())
-                    .build();
-            return ResponseEntity.ok(productDTO);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<ResponseDto<ProductDTO>> findById(@PathVariable Long id) {
+        ResponseDto<ProductDTO> responseDto = productService.findById(id);
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping()
-    public ResponseEntity<?> findAll() {
-        List<ProductDTO> productList = productService.findAll()
-                .stream()
-                .map(product -> ProductDTO.builder()
-                        .id(product.getId())
-                        .name(product.getName())
-                        .description(product.getDescription())
-                        .price(product.getPrice())
-                        .build()
-                ).toList();
-    return ResponseEntity.ok(productList);
+    public ResponseEntity<ResponseDto<List<ProductDTO>>> findAll(@RequestParam(name = "page",defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size ) {
+      ResponseDto<List<ProductDTO>> responseDto = this.productService.findAll(page,size);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping()
-    public ResponseEntity<?> save(@RequestBody ProductDTO productDTO) throws URISyntaxException {
+    public ResponseEntity<Void> save(@RequestBody ProductDTO productDTO) throws URISyntaxException {
 
         if (productDTO.getName().isBlank() || productDTO.getPrice() == null || productDTO.getDescription() == null) {
             return ResponseEntity.badRequest().build();
         }
-
-        Product product = Product.builder()
-                .name(productDTO.getName())
-                .description(productDTO.getDescription())
-                .price(productDTO.getPrice())
-                .build();
-
-        productService.save(product);
-
+        productService.save(productDTO);
         return ResponseEntity.created(new URI("/api/product/save")).build();
     }
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody ProductDTO productDTO) throws URISyntaxException {
-
-        Optional<Product> productOptional = productService.findById(id);
-
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            product.setName(productDTO.getName());
-            product.setDescription(productDTO.getDescription());
-            product.setPrice(productDTO.getPrice());
-            productService.save(product);
-
-            return ResponseEntity.ok("Reqistro Actualizado Correctamente");
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ProductDTO productDTO) throws URISyntaxException {
+        this.productService.update(productDTO, id);
+        return ResponseEntity.ok().build();
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        if (id != null) {
-            productService.deleteById(id);
-            return ResponseEntity.ok("Registro eliminado");
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+         productService.deleteById(id);
+         return ResponseEntity.ok().build();
     }
 }
