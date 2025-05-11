@@ -1,0 +1,92 @@
+
+
+services:
+  config-server:
+    ports:
+      - "8888:8888"
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-server
+    networks:
+      - kafka-network
+  # Kafka único en modo KRaft (sin ZooKeeper)
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # Configuración para modo KRaft (sin ZooKeeper)
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      # Habilitamos el modo KRaft
+      KAFKA_KRAFT_CLUSTER_ID: 'DkXs9arxRxmioaBPQCNZmw'
+      # No necesitamos ZooKeeper
+      CLUSTER_ID: 'DkXs9arxRxmioaBPQCNZmw'
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - kafka-network
+
+  # Servicio de productos
+  # Servicio de productos
+  product-service:
+    ports:
+      - "8060"
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+    depends_on:
+      - config-server
+      - kafka
+    networks:
+      - kafka-network
+
+  # Servicio de órdenes
+  order-service:
+    ports:
+      - "8070:8070"
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - kafka
+      - config-server
+    networks:
+      - kafka-network
+
+  eureka-server:
+    ports:
+      - "8761:8761"
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    networks:
+      - kafka-network
+  
+networks:
+  kafka-network:
+    driver: bridge
+
+volumes:
+  kafka_data:

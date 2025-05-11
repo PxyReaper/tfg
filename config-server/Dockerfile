@@ -6,7 +6,6 @@ COPY ./.mvn ./.mvn
 COPY ./mvnw ./
 RUN chmod +x ./mvnw && ./mvnw dependency:go-offline
 COPY ./src ./src
-COPY wait-for-it.sh /wait-for-it.sh
 RUN ./mvnw clean install -DskipTests
-ENTRYPOINT ["/wait-for-it.sh","config-server:8888", "--","java","-jar","/root/target/order-service-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","/root/target/config-server-0.0.1-SNAPSHOT.jar"]
 LABEL authors="Miguel Pareja"
