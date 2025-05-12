@@ -1,17 +1,25 @@
 spring:
   cloud:
     gateway:
-     mvc:
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/api/users/**  # Aquí no debe haber un espacio después del guion.
-          filters:
-            - StripPrefix=2
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/orders/**
-          filters:
+      mvc:
+        routes:
+          - id: user-service
+            uri: lb://user-service
+            predicates:
+              - Path=/api/users/**
+            filters:
+              - StripPrefix=2
+
+          - id: order-service
+            uri: lb://order-service
+            predicates:
+              - Path=/api/orders/**
+            filters:
+              - StripPrefix=2
+
+          - id: product-service
+            uri: lb://product-service
+            predicates:
+              - Path=/api/products/**
+            filters:
               - StripPrefix=2

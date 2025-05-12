@@ -35,9 +35,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests( (authorize )-> authorize
                     .requestMatchers("/api/users/mail/**").hasRole("ADMIN")
                     .requestMatchers("/api/orders/**").hasAuthority("INTERNAL")
+                        .requestMatchers("/api/products/**").permitAll()
+
                     .anyRequest().authenticated()
                 ).oauth2ResourceServer( oauth ->
-                        oauth.jwt(Customizer.withDefaults())).build();
+                        oauth.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()).
+                                jwtAuthenticationConverter(jwtAuthenticationConverter()))).build();
     }
 
     @Bean
@@ -56,6 +59,7 @@ public class SecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter  = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
+        grantedAuthoritiesConverter.setAuthorityPrefix("");
         JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
         authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return authenticationConverter;
