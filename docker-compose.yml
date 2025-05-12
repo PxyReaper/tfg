@@ -83,7 +83,52 @@ services:
     container_name: eureka-server
     networks:
       - kafka-network
+
+  user-service:
+    ports:
+      - "8080:8080"
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    networks:
+      - kafka-network
+
+  api-gateway:
+    ports:
+      - "8090:8090"
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    networks:
+      - kafka-network
   
+  auth-service:
+    depends_on:
+      - eureka-server
+    ports:
+      - "9100:9100"
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    networks:
+      - kafka-network
+
+  total-order-service:
+    depends_on:
+      - eureka-server
+    stop_grace_period: 10s
+    ports:
+      - "3000:3000"
+    build:
+      context: ./total-order-service
+      dockerfile: Dockerfile
+    container_name: total-order-service
+    networks:
+      - kafka-network
+
 networks:
   kafka-network:
     driver: bridge

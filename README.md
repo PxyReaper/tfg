@@ -22,3 +22,13 @@ const configOptions = {
 ```
 
 A partir de aqui podremos sin problema desarrollar y hacer cambios en nuestras aplicaciones que usen el framework de Spring.
+
+#Ejecución de todos los microservicios
+
+Si deseas ejecutar todos los microservicios para hacer las pruebas, tienes que tener instalado docker (o docker desktop en windows y ejecutar el siguiente comando)
+
+```bash
+docker-compose up
+```
+Tienes que ejecutarlo dentro de la carpeta del tfg, en cualquiera de los microservicios.
+

@@ -2,9 +2,9 @@ import configClient from 'cloud-config-client'
 
 // Opciones de configuración para el cliente
 const configOptions = {
-  endpoint: 'http://localhost:8888', // URL del servidor de configuración (Spring Cloud Config por defecto)
+  endpoint: 'http://config-server:8888', // URL del servidor de configuración (Spring Cloud Config por defecto)
   name: 'total-order-service', // Nombre de la aplicación
-  profiles: ['local'], // Perfiles a cargar (por ejemplo: dev, prod, test)
+  profiles: ['dev'], // Perfiles a cargar (por ejemplo: dev, prod, test)
   // Otras opciones disponibles:
   label: 'master' // La etiqueta git a usar (por defecto: master)
   // rejectUnauthorized: false,     // Para servidores con certificados SSL autofirmados

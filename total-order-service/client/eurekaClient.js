@@ -4,8 +4,8 @@ import { Eureka } from 'eureka-js-client'
 export const eurekaClient = new Eureka({
   instance: {
     app: 'total-order-service',
-    hostName: 'localhost',
-    ipAddr: '127.0.0.1',
+    hostName: 'total-order-service', // nombre del contenedor
+    ipAddr: 'total-order-service',
     port: {
       $: 3000,
       '@enabled': 'true'
@@ -17,7 +17,7 @@ export const eurekaClient = new Eureka({
     }
   },
   eureka: {
-    host: 'localhost',
+    host: 'eureka-server', // nombre del contenedor del servidor Eureka
     port: 8761,
     servicePath: '/eureka/apps/'
   }
