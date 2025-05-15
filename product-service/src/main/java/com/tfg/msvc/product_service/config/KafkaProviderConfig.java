@@ -4,6 +4,7 @@ package com.tfg.msvc.product_service.config;
 import com.tfg.msvc.product_service.MessageExample;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,16 +24,16 @@ public class KafkaProviderConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, Map<String,Object>> producerFactory() {
+    public ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
     @Bean
-    public KafkaTemplate<String, Map<String,Object>> kafkaTemplate(ProducerFactory<String, Map<String,Object>> producerFactory) {
+    public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }

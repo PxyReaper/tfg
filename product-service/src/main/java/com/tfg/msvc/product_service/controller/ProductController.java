@@ -1,5 +1,7 @@
 package com.tfg.msvc.product_service.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tfg.msvc.product_service.MessageExample;
 import com.tfg.msvc.product_service.controller.DTO.ProductDTO;
 import com.tfg.msvc.product_service.controller.DTO.ResponseDto;
@@ -23,7 +25,7 @@ import java.util.Optional;
 public class ProductController {
 
     private final  IProductService productService;
-    private final KafkaTemplate<String, Map<String,Object>> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<ProductDTO>> findById(@PathVariable Long id) {
@@ -58,10 +60,11 @@ public class ProductController {
          return ResponseEntity.ok().build();
     }
     @GetMapping("/test")
-    public ResponseEntity<Void> test() {
-      Map<String,Object> map = new HashMap<>();
-      map.put("message","hola");
-        kafkaTemplate.send("orders-topic",map);
+    public ResponseEntity<Void> test() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+            MessageExample messageExample = new MessageExample("Hola desde kafka objeto");
+            String json = objectMapper.writeValueAsString(messageExample);
+        kafkaTemplate.send("orders-topic",json);
         return ResponseEntity.ok().build();
     }
 }

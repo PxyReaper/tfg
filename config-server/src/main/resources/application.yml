@@ -8,6 +8,6 @@ spring:
         git:
           uri: https://github.com/PxyReaper/config-service.git
           username: PXyReaper
-          password: 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
+          password: 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
           clone-on-start: true
           default-label: master   # <-- Aquí bien indentado bajo git

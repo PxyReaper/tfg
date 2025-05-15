@@ -1,5 +1,7 @@
 package com.teide.tfg.order_service.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teide.tfg.order_service.MessageExample;
 import com.teide.tfg.order_service.dto.OrderDto;
 import com.teide.tfg.order_service.exception.OrderNotFoundByIdException;
@@ -40,8 +42,10 @@ public class OrderServiceImpl implements IOrderService {
 
     }
     @KafkaListener(topics ="orders-topic",groupId = "products-id")
-    public void mensaje(Map<String,Object> messageConsume){
+    public void mensaje(String messageConsume) throws JsonProcessingException {
+        ObjectMapper maper = new ObjectMapper();
+        MessageExample messageExample =  maper.readValue(messageConsume,MessageExample.class);
         System.out.println("hola?");
-        System.out.println(messageConsume.get("message"));
+        System.out.println(messageExample.getMessage());
     }
 }

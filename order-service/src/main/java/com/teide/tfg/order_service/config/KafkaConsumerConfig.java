@@ -32,29 +32,26 @@ public class KafkaConsumerConfig {
 
         // Configurar el deserializer real que se usará dentro del ErrorHandlingDeserializer
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
-        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-
-        // Desactivar la validación de tipo de clase (opcional si confías en "*")
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, StringDeserializer.class);
 
         return props;
     }
 
     @Bean
-    public ConsumerFactory<String, Map<String,Object>> consumerFactory() {
+    public ConsumerFactory<String, String> consumerFactory() {
 
 
 
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfigs(),
                 new ErrorHandlingDeserializer<>(new StringDeserializer()),
-                new ErrorHandlingDeserializer<>(new JsonDeserializer<>())
+                new ErrorHandlingDeserializer<>(new StringDeserializer())
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Map<String,Object>> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Map<String,Object>> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }
