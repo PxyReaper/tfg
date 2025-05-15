@@ -1,5 +1,6 @@
 package com.tfg.msvc.product_service.controller;
 
+import com.tfg.msvc.product_service.MessageExample;
 import com.tfg.msvc.product_service.controller.DTO.ProductDTO;
 import com.tfg.msvc.product_service.controller.DTO.ResponseDto;
 import com.tfg.msvc.product_service.entities.Product;
@@ -7,11 +8,14 @@ import com.tfg.msvc.product_service.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +23,7 @@ import java.util.Optional;
 public class ProductController {
 
     private final  IProductService productService;
+    private final KafkaTemplate<String, Map<String,Object>> kafkaTemplate;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<ProductDTO>> findById(@PathVariable Long id) {
@@ -51,5 +56,12 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
          productService.deleteById(id);
          return ResponseEntity.ok().build();
+    }
+    @GetMapping("/test")
+    public ResponseEntity<Void> test() {
+      Map<String,Object> map = new HashMap<>();
+      map.put("message","hola");
+        kafkaTemplate.send("orders-topic",map);
+        return ResponseEntity.ok().build();
     }
 }
