@@ -21,4 +21,4 @@ RUN chmod +x /wait-for-it.sh
 ENV NODE_OPTIONS="--unhandled-rejections=strict"
 
 # Usar una forma que propague correctamente las señales
-CMD ["/bin/bash", "-c", "/wait-for-it.sh config-server:8888 -- node app.js"]
+CMD ["/bin/bash", "-c", "/wait-for-it.sh eureka-server:8761 --timeout=48 --strict -- node app.js"]

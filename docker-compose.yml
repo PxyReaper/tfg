@@ -4,6 +4,11 @@ services:
   config-server:
     ports:
       - "8888:8888"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     build:
       context: ./config-server
       dockerfile: Dockerfile
@@ -43,7 +48,7 @@ services:
   # Servicio de productos
   product-service:
     ports:
-      - "8060"
+      - "8060:8060"
     build:
       context: ./product-service
       dockerfile: Dockerfile
@@ -115,10 +120,17 @@ services:
     container_name: auth-service
     networks:
       - kafka-network
-
+  
+  payment-service:
+    ports:
+      - "8085:8085"
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    networks:
+      - kafka-network
   total-order-service:
-    depends_on:
-      - eureka-server
     stop_grace_period: 10s
     ports:
       - "3000:3000"
@@ -128,7 +140,7 @@ services:
     container_name: total-order-service
     networks:
       - kafka-network
-
+ 
 networks:
   kafka-network:
     driver: bridge
