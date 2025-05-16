@@ -32,10 +32,11 @@ public class SecurityConfig {
                 sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( (authorize )-> authorize
+                        .requestMatchers("/api/products/**").permitAll()
                     .requestMatchers("/api/users/mail/**").hasRole("ADMIN")
                     .requestMatchers("/api/orders/**").hasAuthority("INTERNAL")
-                        .requestMatchers("/api/products/**").permitAll()
 
                     .anyRequest().authenticated()
                 ).oauth2ResourceServer( oauth ->

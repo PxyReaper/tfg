@@ -1,6 +1,5 @@
 package com.tfg.msvc.product_service.handler;
 
-import com.tfg.msvc.product_service.controller.DTO.StatusDto;
 import com.tfg.msvc.product_service.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +17,8 @@ public class RestGlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleException(Exception e , HttpServletRequest request) {
-        log.error("Fatal error, {},{},{}",e.getMessage(),e.getClass(),request.getRequestURI());
+    public ResponseEntity<Void> handleException(Exception e, HttpServletRequest request) {
+        log.error("Fatal error, {},{},{}", e.getMessage(), e.getClass(), request.getRequestURI());
         return ResponseEntity.internalServerError().build();
     }
 }

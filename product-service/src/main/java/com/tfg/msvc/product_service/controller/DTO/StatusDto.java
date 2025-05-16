@@ -13,6 +13,6 @@ public class StatusDto {
     private Integer page;
     private Integer size;
     private Integer totalPages;
-    private Integer  status;
+    private Integer status;
     private String message;
 }

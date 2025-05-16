@@ -22,22 +22,22 @@ public class ProductServiceImpl implements IProductService {
     private IProductDAO productDAO;
 
     @Override
-    public ResponseDto<List<ProductDTO>>findAll(int page, int size) {
+    public ResponseDto<List<ProductDTO>> findAll(int page, int size) {
         Page<Product> products = productDAO.findAll(page, size);
-        List<ProductDTO> productDTOS = products.stream().map( p -> ProductDTO.builder()
+        List<ProductDTO> productDTOS = products.stream().map(p -> ProductDTO.builder()
                 .id(p.getId())
                 .name(p.getName())
                 .description(p.getDescription())
                 .price(p.getPrice())
                 .build()).toList();
-        return ResponseFactory.generateSuccesResponse(productDTOS,null,
-                HttpStatus.SC_OK,page,size,products.getTotalPages());
+        return ResponseFactory.generateSuccesResponse(productDTOS, null,
+                HttpStatus.SC_OK, page, size, products.getTotalPages());
     }
 
     @Override
     public ResponseDto<ProductDTO> findById(long id) {
         Optional<Product> product = productDAO.findById(id);
-        if(product.isEmpty()){
+        if (product.isEmpty()) {
             throw new ProductNotFoundException("Product not found");
         }
         ProductDTO productDTO = ProductDTO.builder().id(product.get().getId())
@@ -46,18 +46,18 @@ public class ProductServiceImpl implements IProductService {
                 .price(product.get().getPrice())
                 .build();
         ResponseDto<ProductDTO> response = ResponseFactory.generateSuccesResponse(productDTO,
-                "Producto encontrado correctamente",HttpStatus.SC_OK,null,null,null);
+                "Producto encontrado correctamente", HttpStatus.SC_OK, null, null, null);
         return response;
     }
 
     @Override
     public void save(ProductDTO product) {
-       Product product1 = Product.builder()
-               .name(product.getName())
-               .description(product.getDescription())
-               .price(product.getPrice())
-               .build();
-       productDAO.save(product1);
+        Product product1 = Product.builder()
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .build();
+        productDAO.save(product1);
     }
 
     @Override
@@ -73,6 +73,11 @@ public class ProductServiceImpl implements IProductService {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .build();
-        this.productDAO.update(product1,id);
+        this.productDAO.update(product1, id);
+    }
+
+    @Override
+    public boolean existsByIds(List<ProductDTO> productDTOS) {
+        return productDAO.existsByIds(productDTOS);
     }
 }

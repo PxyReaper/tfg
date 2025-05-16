@@ -9,10 +9,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto<T>extends  StatusDto {
+public class ResponseDto<T> extends StatusDto {
     private T result;
-    public ResponseDto(T result, Integer status, String message,Integer page,Integer size, Integer totalPages) {
-        super(page,size,totalPages,status,message);
+
+    public ResponseDto(T result, Integer status, String message, Integer page, Integer size, Integer totalPages) {
+        super(page, size, totalPages, status, message);
         this.result = result;
     }
 
