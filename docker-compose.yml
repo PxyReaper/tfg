@@ -123,11 +123,13 @@ services:
   
   payment-service:
     ports:
-      - "8085:8085"
+      - "8900:8900"
     build:
       context: ./payment-service
       dockerfile: Dockerfile
     container_name: payment-service
+    env_file:
+      - ./payment-service/.env
     networks:
       - kafka-network
   total-order-service:
