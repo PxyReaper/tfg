@@ -17,9 +17,4 @@ public class PaypalConfiguration {
     public PayPalHttpClient getPayPalHttpClient() {
         return new PayPalHttpClient(new PayPalEnvironment.Sandbox(clientId,clientSecret));
     }
-    @PostConstruct
-    public void init() {
-        System.out.println(clientId + " cliente paypal");
-        System.out.println(clientSecret + " cliente secreto paypal");
-    }
 }

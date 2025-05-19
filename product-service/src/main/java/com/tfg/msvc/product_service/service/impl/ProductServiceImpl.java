@@ -78,6 +78,8 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public boolean existsByIds(List<ProductDTO> productDTOS) {
+        System.out.println("existsByIds");
+        System.out.println(productDTOS);
         return productDAO.existsByIds(productDTOS);
     }
 }

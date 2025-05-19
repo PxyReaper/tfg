@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
-    @PostMapping("/pruebas")
-    public ResponseEntity<PaymentOrder> init(@RequestBody Example carrito) {
+    @PostMapping("/init")
+    public ResponseEntity<PaymentOrder> init(@RequestBody Cart carrito) {
         System.out.println("entre");
        PaymentOrder order = paymentService.createOrder(carrito);
        return ResponseEntity.ok(order);

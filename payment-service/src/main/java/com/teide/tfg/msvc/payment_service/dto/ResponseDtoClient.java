@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductQuantity {
-    private ProductDto product;
-    private int quantity;
-
+public class ResponseDtoClient {
+    private Boolean result;
 }

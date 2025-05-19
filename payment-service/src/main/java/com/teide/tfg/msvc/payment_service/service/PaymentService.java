@@ -3,8 +3,12 @@ package com.teide.tfg.msvc.payment_service.service;
 import com.paypal.core.PayPalHttpClient;
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.*;
+import com.teide.tfg.msvc.payment_service.client.ProductClient;
 import com.teide.tfg.msvc.payment_service.dto.Cart;
 import com.teide.tfg.msvc.payment_service.dto.Example;
+import com.teide.tfg.msvc.payment_service.dto.ProductDto;
+import com.teide.tfg.msvc.payment_service.dto.ProductQuantity;
+import com.teide.tfg.msvc.payment_service.exception.ProductModifiedException;
 import com.teide.tfg.msvc.payment_service.model.CompletedOrder;
 import com.teide.tfg.msvc.payment_service.model.PaymentOrder;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +18,27 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     private final PayPalHttpClient payPalHttpClient;
-    public PaymentOrder createOrder(Example carrito){
+    private final ProductClient productClient;
+    public PaymentOrder createOrder(Cart carrito){
+        List<ProductDto> productDtos = carrito.getProductCart()
+                .stream().map(ProductQuantity::getProduct).toList();
+        System.out.println(productDtos);
+        boolean exist = productClient.checkExistence(productDtos).getResult();
+        if(!exist){
+            throw new ProductModifiedException("Uno de los productos ha sido modificado");
+
+        }
         OrderRequest request = new OrderRequest();
         request.checkoutPaymentIntent("CAPTURE");
         AmountWithBreakdown amountWithBreakdown = new AmountWithBreakdown()
-                .currencyCode("EUR").value(carrito.getAmount().toString());
+                .currencyCode("EUR").value(carrito.getTotalQuantity().toString());
         PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest()
                 .amountWithBreakdown(amountWithBreakdown);
         request.purchaseUnits(List.of(purchaseUnitRequest));
