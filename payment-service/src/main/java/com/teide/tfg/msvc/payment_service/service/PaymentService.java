@@ -14,8 +14,10 @@ import com.teide.tfg.msvc.payment_service.model.PaymentOrder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -26,11 +28,13 @@ import java.util.stream.Collectors;
 public class PaymentService {
     private final PayPalHttpClient payPalHttpClient;
     private final ProductClient productClient;
+    @Transactional
     public PaymentOrder createOrder(Cart carrito){
         List<ProductDto> productDtos = carrito.getProductCart()
                 .stream().map(ProductQuantity::getProduct).toList();
-        System.out.println(productDtos);
+
         boolean exist = productClient.checkExistence(productDtos).getResult();
+        BigDecimal quantity = this.checkQuantity(carrito);
         if(!exist){
             throw new ProductModifiedException("Uno de los productos ha sido modificado");
 
@@ -38,7 +42,7 @@ public class PaymentService {
         OrderRequest request = new OrderRequest();
         request.checkoutPaymentIntent("CAPTURE");
         AmountWithBreakdown amountWithBreakdown = new AmountWithBreakdown()
-                .currencyCode("EUR").value(carrito.getTotalQuantity().toString());
+                .currencyCode("EUR").value(quantity.toString());
         PurchaseUnitRequest purchaseUnitRequest = new PurchaseUnitRequest()
                 .amountWithBreakdown(amountWithBreakdown);
         request.purchaseUnits(List.of(purchaseUnitRequest));
@@ -78,6 +82,14 @@ public class PaymentService {
         }
         return new CompletedOrder("error");
     }
-
-
+    private BigDecimal checkQuantity(Cart carrito){
+        BigDecimal acumulado = carrito.getProductCart().stream()
+                .map(p -> p.getProduct().getPrice().multiply(BigDecimal.valueOf(p.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if(acumulado.compareTo(carrito.getTotalQuantity()) != 0){
+            return acumulado;
+        }
+        return carrito.getTotalQuantity();
+    }
 }
+
