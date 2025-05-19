@@ -33,8 +33,5 @@ public class KafkaConfig {
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
-    @PostConstruct
-    public void init(){
-        System.out.println(bootstrapServers);
-    }
+
 }

@@ -9,8 +9,11 @@ import com.teide.tfg.msvc.payment_service.dto.Example;
 import com.teide.tfg.msvc.payment_service.dto.ProductDto;
 import com.teide.tfg.msvc.payment_service.dto.ProductQuantity;
 import com.teide.tfg.msvc.payment_service.exception.ProductModifiedException;
+import com.teide.tfg.msvc.payment_service.model.CartEntity;
 import com.teide.tfg.msvc.payment_service.model.CompletedOrder;
 import com.teide.tfg.msvc.payment_service.model.PaymentOrder;
+import com.teide.tfg.msvc.payment_service.model.ProductQuantityEntity;
+import com.teide.tfg.msvc.payment_service.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 public class PaymentService {
     private final PayPalHttpClient payPalHttpClient;
     private final ProductClient productClient;
+    private final CartRepository cartRepository;
     @Transactional
     public PaymentOrder createOrder(Cart carrito){
         List<ProductDto> productDtos = carrito.getProductCart()
@@ -63,6 +68,7 @@ public class PaymentService {
                     .findFirst()
                     .orElseThrow(NoSuchElementException::new)
                     .href();
+            persistCartOnDatabase(carrito,order.id(),quantity);
             return new PaymentOrder("success",order.id(),redirectUrl);
 
         }catch (IOException ex){
@@ -90,6 +96,13 @@ public class PaymentService {
             return acumulado;
         }
         return carrito.getTotalQuantity();
+    }
+    private void persistCartOnDatabase(Cart carrito,String payId,BigDecimal quantity){
+        Set<ProductQuantityEntity> productQuantities = carrito.getProductCart()
+                .stream().map(p ->
+                        new ProductQuantityEntity(null,p.getProduct().getId(),p.getQuantity())).collect(Collectors.toSet());
+        CartEntity cartEntity = new CartEntity(payId,productQuantities,quantity);
+        cartRepository.save(cartEntity);
     }
 }
 
