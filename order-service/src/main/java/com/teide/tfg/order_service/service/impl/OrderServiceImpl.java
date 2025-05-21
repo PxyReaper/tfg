@@ -3,17 +3,25 @@ package com.teide.tfg.order_service.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teide.tfg.order_service.MessageExample;
+import com.teide.tfg.order_service.clients.AuthClient;
 import com.teide.tfg.order_service.dto.OrderDto;
+import com.teide.tfg.order_service.dto.PaymentConsumer;
+import com.teide.tfg.order_service.dto.UserDto;
 import com.teide.tfg.order_service.exception.OrderNotFoundByIdException;
+import com.teide.tfg.order_service.model.OrderEntity;
 import com.teide.tfg.order_service.repository.OrderRepository;
 import com.teide.tfg.order_service.service.IOrderService;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +29,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements IOrderService {
     private final OrderRepository orderRepository;
+    private final AuthClient authClient;
     @Override
     public Page<OrderDto> findALl(int page,int size) {
         Pageable pageable = PageRequest.of(page,size);
@@ -41,11 +50,18 @@ public class OrderServiceImpl implements IOrderService {
         return  order.get();
 
     }
-    @KafkaListener(topics ="orders-topic",groupId = "products-id")
-    public void mensaje(String messageConsume) throws JsonProcessingException {
-        ObjectMapper maper = new ObjectMapper();
-        MessageExample messageExample =  maper.readValue(messageConsume,MessageExample.class);
-        System.out.println("hola?");
-        System.out.println(messageExample.getMessage());
+    @KafkaListener(topics = "payment-topic",groupId = "paymentId")
+    @Override
+    public void save(String paymentProducer) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        PaymentConsumer consumer = mapper.readValue(paymentProducer, PaymentConsumer.class);
+        System.out.println(consumer);
+        String token =consumer.getToken();
+        UserDto user = authClient.getCurrentUser(token);
+        LocalDate now = LocalDate.from(LocalDateTime.now());
+        OrderEntity order = new OrderEntity(null,user.getIdUsuario(), now,now.plusWeeks(1L),consumer.getAmount());
+        orderRepository.save(order);
     }
+
+
 }

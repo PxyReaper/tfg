@@ -2,6 +2,7 @@ package com.tfg.msvc.authservice.controller;
 
 import com.tfg.msvc.authservice.dto.AuthDto;
 import com.tfg.msvc.authservice.dto.ResponseDto;
+import com.tfg.msvc.authservice.dto.UserDto;
 import com.tfg.msvc.authservice.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,5 +42,10 @@ public class AuthController {
         }
         ResponseDto responseDto = authService.refreshToken(refreshToken);
         return ResponseEntity.ok(responseDto);
+    }
+    @PostMapping("/user")
+    public ResponseEntity<UserDto> getUser(@RequestParam(name = "token") String token){
+        UserDto currentUser = this.authService.getCurrentUser(token);
+        return ResponseEntity.ok(currentUser);
     }
 }

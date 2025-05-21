@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Table(name = "producto_h")
+@Table(name = "pedido_h")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -58,5 +60,7 @@ public class OrderEntity {
     private LocalDate fechaCompra;
     @Column(name = "fecha_entrega")
     private LocalDate fecha_entrega;
+    @Column(name = "precio_total")
+    BigDecimal precioTotal;
 
 }

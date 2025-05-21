@@ -29,7 +29,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.POST,"/api/oauth/*").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/oauth/**").permitAll()
                 ).sessionManagement( s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(AbstractHttpConfigurer::disable)
                 // Form login handles the redirect to the login page from the

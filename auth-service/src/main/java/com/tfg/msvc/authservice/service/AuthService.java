@@ -1,7 +1,10 @@
 package com.tfg.msvc.authservice.service;
 
+import com.tfg.msvc.authservice.clients.UserClient;
 import com.tfg.msvc.authservice.dto.AuthDto;
+import com.tfg.msvc.authservice.dto.ResponseClientDto;
 import com.tfg.msvc.authservice.dto.ResponseDto;
+import com.tfg.msvc.authservice.dto.UserDto;
 import com.tfg.msvc.authservice.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -17,6 +20,7 @@ public class AuthService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final UserService  userService;
+    private final UserClient userClient;
 
     public ResponseDto login(AuthDto  authDto){
             Authentication auth = authenticationManager.authenticate(
@@ -43,4 +47,11 @@ public class AuthService {
         return new ResponseDto(token, null, null);
 
     }
+    public UserDto getCurrentUser(String token){
+        String username = jwtUtils.getSubject(token);
+        ResponseClientDto response = this.userClient.findByMail(username);
+        return response.getResult();
+
+    }
+
 }
