@@ -4,15 +4,13 @@ import com.paypal.core.PayPalHttpClient;
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.*;
 import com.teide.tfg.msvc.payment_service.client.ProductClient;
-import com.teide.tfg.msvc.payment_service.dto.Cart;
-import com.teide.tfg.msvc.payment_service.dto.Example;
-import com.teide.tfg.msvc.payment_service.dto.ProductDto;
-import com.teide.tfg.msvc.payment_service.dto.ProductQuantity;
+import com.teide.tfg.msvc.payment_service.dto.*;
 import com.teide.tfg.msvc.payment_service.exception.ProductModifiedException;
 import com.teide.tfg.msvc.payment_service.model.CartEntity;
 import com.teide.tfg.msvc.payment_service.model.CompletedOrder;
 import com.teide.tfg.msvc.payment_service.model.PaymentOrder;
 import com.teide.tfg.msvc.payment_service.model.ProductQuantityEntity;
+import com.teide.tfg.msvc.payment_service.producer.PaymentProducer;
 import com.teide.tfg.msvc.payment_service.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +21,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,8 +32,9 @@ public class PaymentService {
     private final PayPalHttpClient payPalHttpClient;
     private final ProductClient productClient;
     private final CartRepository cartRepository;
+    private final PaymentProducer paymentProducer;
     @Transactional
-    public PaymentOrder createOrder(Cart carrito){
+    public PaymentOrder createOrder(Cart carrito,String token){
         List<ProductDto> productDtos = carrito.getProductCart()
                 .stream().map(ProductQuantity::getProduct).toList();
 
@@ -68,7 +68,7 @@ public class PaymentService {
                     .findFirst()
                     .orElseThrow(NoSuchElementException::new)
                     .href();
-            persistCartOnDatabase(carrito,order.id(),quantity);
+            persistCartOnDatabase(carrito,order.id(),quantity,token);
             return new PaymentOrder("success",order.id(),redirectUrl);
 
         }catch (IOException ex){
@@ -81,6 +81,7 @@ public class PaymentService {
         try {
             HttpResponse<Order> httpResponse = payPalHttpClient.execute(ordersCaptureRequest);
             if (httpResponse.result().status() != null) {
+                this.sentSuccesPaymentToKafka(token);
                 return new CompletedOrder("success", token);
             }
         } catch (IOException e) {
@@ -97,12 +98,19 @@ public class PaymentService {
         }
         return carrito.getTotalQuantity();
     }
-    private void persistCartOnDatabase(Cart carrito,String payId,BigDecimal quantity){
+    private void persistCartOnDatabase(Cart carrito,String payId,BigDecimal quantity,String token){
         Set<ProductQuantityEntity> productQuantities = carrito.getProductCart()
                 .stream().map(p ->
                         new ProductQuantityEntity(null,p.getProduct().getId(),p.getQuantity())).collect(Collectors.toSet());
-        CartEntity cartEntity = new CartEntity(payId,productQuantities,quantity);
+        CartEntity cartEntity = new CartEntity(payId,productQuantities,quantity,token);
         cartRepository.save(cartEntity);
+    }
+    private void sentSuccesPaymentToKafka(String id){
+        Optional<CartEntity> cart = this.cartRepository.findById(id);
+        List<Long> ids = cart.get().getProduct().stream().map(ProductQuantityEntity::getProductId).toList();
+        PaymentProducerDto confirmPayment = new PaymentProducerDto(ids,cart.get().getUserToken());
+        System.out.println(confirmPayment);
+        paymentProducer.sendPayment(confirmPayment);
     }
 }
 

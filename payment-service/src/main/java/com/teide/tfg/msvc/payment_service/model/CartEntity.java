@@ -29,4 +29,6 @@ public class CartEntity {
 
     private Set<ProductQuantityEntity> product;
     private BigDecimal price;
+    @Column(name = "user_token")
+    private String userToken;
 }
