@@ -1,6 +1,6 @@
 # Trabajo de fin de grado  de desarrollo de aplicaciones Web en el centro TEIDE IV
 
-Este repositorio muestra el desarrollo de la aplicacion **AMAZONIAS**, la cual es la que se presentará  en la exposición del trabajo de fin de grado del actual curso 2024/2025.
+Este repositorio muestra el desarrollo de la aplicacion **AMAZONIAS**, la cual es la que se presentará  en la exposición del trabajo de fin de grado del actual curso 2024/2025 el 16 de Junio.
 
 **Para poder hacer las pruebas en los respectivos proyectos**, primero hay que levantar tanto el servidor de configuración(**config-service**) junto con el servidor de nombre (**eureka-server**) para empezar a hacer cambios dentro de la infraestructura del proyecto.
 
@@ -21,7 +21,7 @@ const configOptions = {
 }
 ```
 
-A partir de aqui podremos sin problema desarrollar y hacer cambios en nuestras aplicaciones que usen el framework de Spring.
+A partir de aqui podremos sin problema desarrollar y hacer cambios en nuestras aplicaciones que usen el framework de Spring o ExpressJs.
 
 ## Ejecución de todos los microservicios
 
@@ -31,4 +31,18 @@ Si deseas ejecutar todos los microservicios para hacer las pruebas, tienes que t
 docker-compose up
 ```
 Tienes que ejecutarlo dentro de la carpeta del tfg, en cualquiera de los microservicios.
+
+Una vez hecho eso, ya podrias empezar a hacer pruebas o añadir funcionalidad a la aplicacion, si quieres hacer cambios antes de ejecutar otra vez lo microservicios tienes que hacer el siguiente comando.
+```bash
+docker build -t "nombre-del-microservicio" .
+```
+este comando tienes que ejecutarlo dentro de la carpeta raiz del microservicio que esta modificando, debido a ahi esta el archivo Dockerfile para crear la imagen.
+
+Después,  tienes que ejecutar el siguiente comando.
+```bash
+docker compose build
+```
+con eso volveras a construir todas las imagenes de los microservicios y refrescarlos para asi se guarden los cambios dentro de los contenedores.
+
+A partir de ahí, ya podras hacer las pruebas que consideres dentro del proyecto.
 
