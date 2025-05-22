@@ -6,9 +6,11 @@ import com.teide.tfg.order_service.MessageExample;
 import com.teide.tfg.order_service.clients.AuthClient;
 import com.teide.tfg.order_service.dto.OrderDto;
 import com.teide.tfg.order_service.dto.PaymentConsumer;
+import com.teide.tfg.order_service.dto.TotalOrderProducerDto;
 import com.teide.tfg.order_service.dto.UserDto;
 import com.teide.tfg.order_service.exception.OrderNotFoundByIdException;
 import com.teide.tfg.order_service.model.OrderEntity;
+import com.teide.tfg.order_service.producer.TotalOrderProducer;
 import com.teide.tfg.order_service.repository.OrderRepository;
 import com.teide.tfg.order_service.service.IOrderService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class OrderServiceImpl implements IOrderService {
     private final OrderRepository orderRepository;
     private final AuthClient authClient;
+    private final TotalOrderProducer totalOrderProducer;
     @Override
     public Page<OrderDto> findALl(int page,int size) {
         Pageable pageable = PageRequest.of(page,size);
@@ -60,8 +63,11 @@ public class OrderServiceImpl implements IOrderService {
         UserDto user = authClient.getCurrentUser(token);
         LocalDate now = LocalDate.from(LocalDateTime.now());
         OrderEntity order = new OrderEntity(null,user.getIdUsuario(), now,now.plusWeeks(1L),consumer.getAmount());
-        orderRepository.save(order);
+       OrderEntity saved =  orderRepository.save(order);
+        TotalOrderProducerDto totalOrder = new TotalOrderProducerDto(consumer.getProductsId(),saved.getId());
+        totalOrderProducer.sendMessage(totalOrder);
     }
+
 
 
 }

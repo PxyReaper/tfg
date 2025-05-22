@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class PaymentConsumer {
-    private List<Long> productsIds;
+    private List<ObjectConsumerDto> productsId;
     private String token;
     private BigDecimal amount;
 }
