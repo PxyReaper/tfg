@@ -23,9 +23,17 @@ spring:
               - Path=/api/products/**
             filters:
               - StripPrefix=2
+
           - id: payment-service
             uri: lb://payment-service
             predicates:
               - Path=/api/payment/**
+            filters:
+              - StripPrefix=2
+
+          - id: auth-service
+            uri: lb://auth-service
+            predicates:
+              - Path=/api/oauth/**
             filters:
               - StripPrefix=2

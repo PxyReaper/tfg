@@ -1,6 +1,9 @@
 package com.tfg.msvc.authservice.security;
 
+
+import com.tfg.msvc.authservice.clients.UserClient;
 import com.tfg.msvc.authservice.service.UserService;
+import com.tfg.msvc.authservice.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +18,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @RequiredArgsConstructor
 @Configuration
 
 public class SecurityConfig {
     private final PasswordEncoder passwordEncoder;
-
+    private final UserClient userClient;
+    private final JwtUtils jwtUtils;
 
 
     @Bean
@@ -29,13 +34,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.POST,"/api/oauth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/**").permitAll()
                 ).sessionManagement( s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(AbstractHttpConfigurer::disable)
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
-                .formLogin(AbstractHttpConfigurer::disable)
-                ;
+                .formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -53,6 +57,7 @@ public class SecurityConfig {
         return  daoAuthenticationProvider;
 
     }
+
 
 
 

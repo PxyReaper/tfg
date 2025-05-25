@@ -19,7 +19,7 @@ public class UserService implements UserDetailsService {
     private final UserClient userClient;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDto  user = this.userClient.findByMail(username).getResult();
+        UserDto  user = this.userClient.findByMail(username).getBody().getResult();
         List<SimpleGrantedAuthority> authorities = user.getRoles()
                 .stream().map( r ->  new SimpleGrantedAuthority("ROLE_".concat(r.getTipo())))
                 .collect(Collectors.toList());

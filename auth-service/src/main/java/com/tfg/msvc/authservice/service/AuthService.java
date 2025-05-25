@@ -8,6 +8,7 @@ import com.tfg.msvc.authservice.dto.UserDto;
 import com.tfg.msvc.authservice.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,8 +50,8 @@ public class AuthService {
     }
     public UserDto getCurrentUser(String token){
         String username = jwtUtils.getSubject(token);
-        ResponseClientDto response = this.userClient.findByMail(username);
-        return response.getResult();
+        ResponseEntity<ResponseClientDto> response = userClient.findByMail(username);
+        return response.getBody().getResult();
 
     }
 
