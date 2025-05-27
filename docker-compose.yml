@@ -57,6 +57,8 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+    env_file:
+      - ./product-service/.env
     depends_on:
       - config-server
       - kafka

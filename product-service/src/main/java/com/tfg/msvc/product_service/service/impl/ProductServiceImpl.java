@@ -6,11 +6,13 @@ import com.tfg.msvc.product_service.entities.Product;
 import com.tfg.msvc.product_service.exception.ProductNotFoundException;
 import com.tfg.msvc.product_service.factory.ResponseFactory;
 import com.tfg.msvc.product_service.persistence.IProductDAO;
+import com.tfg.msvc.product_service.service.IAsyncS3Service;
 import com.tfg.msvc.product_service.service.IProductService;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,8 @@ public class ProductServiceImpl implements IProductService {
 
     @Autowired
     private IProductDAO productDAO;
+    @Autowired
+    private IAsyncS3Service asyncS3Service;
 
     @Override
     public ResponseDto<List<ProductDTO>> findAll(int page, int size) {
@@ -51,13 +55,14 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public void save(ProductDTO product) {
+    public void save(ProductDTO product, List<MultipartFile> file) {
         Product product1 = Product.builder()
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .build();
-        productDAO.save(product1);
+
+         productDAO.save(product1,file);
     }
 
     @Override

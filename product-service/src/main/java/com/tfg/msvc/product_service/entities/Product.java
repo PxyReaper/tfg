@@ -26,4 +26,11 @@ public class Product {
 
     @Column(name = "precio_unit")
     private BigDecimal price;
+    private String portada;
+    @Column(name = "lateral_izquierdo")
+    private String lateralIzquierdo;
+    @Column(name = "lateral_derecho")
+    private String lateralDerecho;
+    @Column(name = "arriba")
+    private String arriba;
 }

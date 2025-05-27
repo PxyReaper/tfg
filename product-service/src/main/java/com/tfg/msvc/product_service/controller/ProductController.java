@@ -9,9 +9,11 @@ import com.tfg.msvc.product_service.factory.ResponseFactory;
 import com.tfg.msvc.product_service.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,18 +58,22 @@ public class ProductController {
 
     }
 
-    @PostMapping()
-    public ResponseEntity<Void> save(@RequestBody ProductDTO productDTO) throws URISyntaxException {
+    @PostMapping( consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> save(@RequestPart(name = "product") String product, @RequestPart List<MultipartFile> files ) throws URISyntaxException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDTO productDTO = objectMapper.readValue(product, ProductDTO.class);
 
         if (productDTO.getName().isBlank() || productDTO.getPrice() == null || productDTO.getDescription() == null) {
             return ResponseEntity.badRequest().build();
         }
-        productService.save(productDTO);
+        productService.save(productDTO,files);
+
+
         return ResponseEntity.created(new URI("/api/product/save")).build();
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ProductDTO productDTO) throws URISyntaxException {
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ProductDTO productDTO)  {
         this.productService.update(productDTO, id);
         return ResponseEntity.ok().build();
     }
