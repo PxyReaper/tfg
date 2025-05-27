@@ -24,7 +24,7 @@ import java.util.List;
 public class ProductController {
 
     private final IProductService productService;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+
 
     @GetMapping("/id/{id}")
     public ResponseEntity<ResponseDto<ProductDTO>> findById(@PathVariable Long id) {
@@ -39,14 +39,6 @@ public class ProductController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<Void> test() throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        MessageExample messageExample = new MessageExample("Hola desde kafka objeto");
-        String json = objectMapper.writeValueAsString(messageExample);
-        kafkaTemplate.send("orders-topic", json);
-        return ResponseEntity.ok().build();
-    }
 
     @PostMapping("/check-existence")
     public ResponseEntity<ResponseDto<Boolean>> exits(@RequestBody List<ProductDTO> productDTOS) {
