@@ -20,4 +20,8 @@ public class ProductDTO {
     private String description;
 
     private BigDecimal price;
+    private String frontPage;
+    private String leftPage;
+    private String rightPage;
+    private String upperPage;
 }

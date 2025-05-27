@@ -33,6 +33,10 @@ public class ProductServiceImpl implements IProductService {
                 .name(p.getName())
                 .description(p.getDescription())
                 .price(p.getPrice())
+                .frontPage(p.getPortada())
+                .leftPage(p.getLateralIzquierdo())
+                .rightPage(p.getLateralDerecho())
+                .upperPage(p.getArriba())
                 .build()).toList();
         return ResponseFactory.generateSuccesResponse(productDTOS, null,
                 HttpStatus.SC_OK, page, size, products.getTotalPages());
