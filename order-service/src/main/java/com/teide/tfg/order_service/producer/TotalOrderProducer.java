@@ -16,7 +16,11 @@ public class TotalOrderProducer {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = mapper.writeValueAsString(totalOrderProducerDto);
-            kafkaTemplate.send("total-order-topic",json);
+            kafkaTemplate.send("total-order-topic",json).thenAccept( result ->
+                    System.out.println(" Se ha enviado el evento correctamente"))
+                    .exceptionally(err ->{ System.out.println("Ha ocurrido un error " + err.getMessage());
+                    return null;
+                    });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -2,7 +2,7 @@ import express from 'express' // require -> commonJS
 import { createTotalOrderRouter } from './routes/totalOrderRoutes.js'
 import './client/eurekaClient.js'
 import { TotalOrderModel } from './models/mysql/totalOrderModel.js'
-
+import './services/orderConsumer.js'
 export const createApp = async ({ totalOrderModel }) => {
   const app = express()
   app.disable('x-powered-by')

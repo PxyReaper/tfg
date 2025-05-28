@@ -1,8 +1,6 @@
-const { Kafka } = require('kafkajs')
+import { Kafka } from 'kafkajs'
 
-const kafka = new Kafka({
+export const kafka = new Kafka({
   clientId: 'total-order-service', // Nombre del servicio
   brokers: ['kafka:29092'] // Dirección del broker Kafka
 })
-
-module.exports = kafka
