@@ -2,6 +2,8 @@ package com.teide.tfg.order_service.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,4 +12,6 @@ import lombok.*;
 public class ObjectConsumerDto {
     private Long productId;
     private Integer quantity;
+    private BigDecimal unitPrice;
+
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -12,4 +14,5 @@ import lombok.Setter;
 public class ObjectProducerDto {
     private Long productId;
     private Integer quantity;
+    private BigDecimal unitPrice;
 }

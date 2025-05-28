@@ -108,8 +108,10 @@ public class PaymentService {
     private void sentSuccesPaymentToKafka(String id){
         Optional<CartEntity> cart = this.cartRepository.findById(id);
         List<ObjectProducerDto> ids = cart.get().getProduct().stream()
-                .map( p -> new ObjectProducerDto(p.getProductId(),p.getQuantity())).
-                toList();
+                .map( p -> {
+                    ProductDto productDto = this.productClient.getProductById(p.getProductId()).getResult();
+                    return new ObjectProducerDto(p.getProductId(),p.getQuantity(),productDto.getPrice());
+                }).toList();
         PaymentProducerDto confirmPayment = new PaymentProducerDto(ids,cart.get().getUserToken(),cart.get().getPrice());
         System.out.println(confirmPayment);
         paymentProducer.sendPayment(confirmPayment);

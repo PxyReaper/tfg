@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "auth-service")
 public interface AuthClient {
-    @PostMapping("/api/oauth/user")
+    @PostMapping("/user")
     public UserDto getCurrentUser(@RequestParam(name = "token") String token);
 
 }

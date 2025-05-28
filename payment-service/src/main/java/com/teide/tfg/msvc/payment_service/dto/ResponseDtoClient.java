@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDtoClient {
-    private Boolean result;
+public class ResponseDtoClient <T> {
+    private T result;
 }
