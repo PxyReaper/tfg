@@ -1,11 +1,14 @@
-FROM ubuntu:latest
+# Etapa 1: Build
+FROM eclipse-temurin:21 AS build
+WORKDIR /workspace
+COPY .mvn .mvn
+COPY mvnw pom.xml ./
+COPY src src
+RUN chmod +x ./mvnw && ./mvnw clean package -DskipTests
+
+# Etapa 2: Imagen final
 FROM eclipse-temurin:21
-WORKDIR /root
-COPY ./pom.xml ./
-COPY ./.mvn ./.mvn
-COPY ./mvnw ./
-RUN chmod +x ./mvnw && ./mvnw dependency:go-offline
-COPY ./src ./src
-RUN ./mvnw clean install -DskipTests
-ENTRYPOINT ["java","-jar","/root/target/eureka-server-0.0.1-SNAPSHOT.jar"]
+WORKDIR /app
+COPY --from=build /workspace/target/eureka-server-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
 LABEL authors="Miguel Pareja"
