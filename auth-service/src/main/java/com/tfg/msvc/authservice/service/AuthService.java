@@ -1,11 +1,9 @@
 package com.tfg.msvc.authservice.service;
 
 import com.tfg.msvc.authservice.clients.UserClient;
-import com.tfg.msvc.authservice.dto.AuthDto;
-import com.tfg.msvc.authservice.dto.ResponseClientDto;
-import com.tfg.msvc.authservice.dto.ResponseDto;
-import com.tfg.msvc.authservice.dto.UserDto;
+import com.tfg.msvc.authservice.dto.*;
 import com.tfg.msvc.authservice.utils.JwtUtils;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +52,30 @@ public class AuthService {
         return response.getBody().getResult();
 
     }
+    public ResponseDto getAuthWithGoogle(AuthGoogleDto authGoogleDto){
+        try {
+            ResponseEntity<ResponseClientDto> user = userClient.findByMail(authGoogleDto.getEmail());
+
+            // 🔍 DEBUG - Añade estos logs temporalmente
+            System.out.println("Status Code: " + user.getStatusCode());
+            System.out.println("Status Code Value: " + user.getStatusCode().value());
+            System.out.println("is4xxClientError: " + user.getStatusCode().is4xxClientError());
+            System.out.println("Body: " + user.getBody());
+        }catch(FeignException ex){
+            UserDto userDto = new UserDto(null,authGoogleDto.getGiven_name(),authGoogleDto.getFamily_name(),
+                    null,null,null,authGoogleDto.getEmail(),null,null,null,null,null);
+            userClient.save(userDto);
+        }
+        UserDetails userAuthenticated = this.userService.loadUserByUsername(authGoogleDto.getEmail());
+        Authentication auth =  new UsernamePasswordAuthenticationToken(
+                userAuthenticated.getUsername(), null, userAuthenticated.getAuthorities()
+        );
+        String token = this.jwtUtils.generateToken(auth);
+        String refreshToken = jwtUtils.generateRefreshToken(auth);
+        ResponseCookie cookie = jwtUtils.generateRefreshTokenCookie(refreshToken);
+        return new ResponseDto(token,cookie,"Usuario autenticado correctamente");
+    }
+
+
 
 }

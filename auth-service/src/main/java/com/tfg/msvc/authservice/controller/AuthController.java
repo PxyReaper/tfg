@@ -1,6 +1,7 @@
 package com.tfg.msvc.authservice.controller;
 
 import com.tfg.msvc.authservice.dto.AuthDto;
+import com.tfg.msvc.authservice.dto.AuthGoogleDto;
 import com.tfg.msvc.authservice.dto.ResponseDto;
 import com.tfg.msvc.authservice.dto.UserDto;
 import com.tfg.msvc.authservice.service.AuthService;
@@ -46,5 +47,11 @@ public class AuthController {
     public ResponseEntity<UserDto> getUser(@RequestParam(name = "token") String token){
         UserDto currentUser = this.authService.getCurrentUser(token);
         return ResponseEntity.ok(currentUser);
+    }
+    @PostMapping("/google/login")
+    public ResponseEntity<ResponseDto> googleLogin(@RequestBody AuthGoogleDto authDto){
+        ResponseDto response = authService.getAuthWithGoogle(authDto);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,response.getRefreshCookieToken().toString())
+                .body(response);
     }
 }

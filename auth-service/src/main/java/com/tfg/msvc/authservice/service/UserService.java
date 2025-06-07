@@ -28,6 +28,9 @@ public class UserService implements UserDetailsService {
                        .flatMap(r -> r.getPermissions().stream())
                        .map(p -> new SimpleGrantedAuthority(p.getTipo())).toList()
        );
+        if (user.getContraseña() == null || user.getContraseña().isEmpty()) {
+            user.setContraseña("{noop}"); // indica password vacío sin codificación, o pon algún valor dummy
+        }
 
        return new User(user.getEmail(),user.getContraseña(),authorities);
 

@@ -22,7 +22,7 @@ public class JwtUtils {
     @Value("${spring.private.user}")
     private String privateKey;
 
-    public String generateToken( Authentication auth){
+    public String generateToken(Authentication auth){
         String username = auth.getName();
         Algorithm algorithm = Algorithm.HMAC256(privateKey);
         List<String> authorities = auth.getAuthorities()
@@ -35,6 +35,7 @@ public class JwtUtils {
                 .withExpiresAt(Instant.now().plusSeconds(120L))
                 .sign(algorithm);
     }
+
     public String generateRefreshToken(Authentication authentication){
         Algorithm algorithm = Algorithm.HMAC256(privateKey);
         String username = authentication.getName();
@@ -48,35 +49,63 @@ public class JwtUtils {
     }
 
     public boolean verifyToken(String token){
-        Algorithm algorithm = Algorithm.HMAC256(privateKey);
         try{
-            JWTVerifier verifier =  JWT.require(algorithm)
+            Algorithm algorithm = Algorithm.HMAC256(privateKey);
+            JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("AMAZONIA-JWT")
                     .build();
             verifier.verify(token);
             return true;
         }catch (JWTVerificationException ex){
-          return false;
+            System.err.println("JWT Verification failed: " + ex.getMessage());
+            return false;
         }
     }
+
+    // ✅ Método seguro que verifica la firma antes de extraer el subject
     public String getSubject(String token){
-        DecodedJWT decodedJWT = decodeToken(token);
-        return decodedJWT.getSubject();
+        try {
+            DecodedJWT decodedJWT = verifyAndDecodeToken(token);
+            return decodedJWT.getSubject();
+        } catch (JWTVerificationException ex) {
+            throw new RuntimeException("Invalid token: " + ex.getMessage());
+        }
     }
-    private DecodedJWT decodeToken(String token){
-        return JWT.decode(token);
+
+    // ✅ Nuevo método que verifica Y decodifica el token
+    private DecodedJWT verifyAndDecodeToken(String token) throws JWTVerificationException {
+        Algorithm algorithm = Algorithm.HMAC256(privateKey);
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer("AMAZONIA-JWT")
+                .build();
+        return verifier.verify(token); // Esto verifica Y decodifica
     }
+
+    // ✅ Método adicional para obtener claims de forma segura
+    public List<String> getRoles(String token) {
+        try {
+            DecodedJWT decodedJWT = verifyAndDecodeToken(token);
+            return decodedJWT.getClaim("role").asList(String.class);
+        } catch (JWTVerificationException ex) {
+            throw new RuntimeException("Invalid token: " + ex.getMessage());
+        }
+    }
+
     public ResponseCookie generateRefreshTokenCookie(String refreshToken){
-        return generateCookie("REFRESH-TOKEN",refreshToken,"/api");
+        return generateCookie("REFRESH-TOKEN", refreshToken, "/api");
     }
+
     public ResponseCookie generateCleanResponseCookie(String cookieName){
-        return ResponseCookie.from(cookieName,null).maxAge(0).build();
-
+        return ResponseCookie.from(cookieName, null).maxAge(0).build();
     }
 
-    private ResponseCookie generateCookie(String cookieName,String cookieValue,String path){
-        return ResponseCookie.from(cookieName,cookieValue).path(path).maxAge(Duration.ofDays(7))
-                .httpOnly(true).build();
+    private ResponseCookie generateCookie(String cookieName, String cookieValue, String path){
+        return ResponseCookie.from(cookieName, cookieValue)
+                .path(path)
+                .maxAge(Duration.ofDays(7))
+                .httpOnly(true)
+                .secure(true) // ✅ Añadido para HTTPS
+                .sameSite("Strict") // ✅ Protección CSRF
+                .build();
     }
-
 }

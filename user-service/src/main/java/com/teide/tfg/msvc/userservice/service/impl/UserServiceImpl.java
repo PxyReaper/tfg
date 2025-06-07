@@ -36,7 +36,10 @@ public class UserServiceImpl implements UserService {
         RoleEntity role = this.roleRepository.findRoleEntitiesByTipoIgnoreCase("USER");
         UserEntity userEntity = UserEntityConverter.convertUserDtoToUserEntity(userDto);
         userEntity.getRoles().add(role);
-        userEntity.setContraseña(passwordEncoder.encode(userEntity.getContraseña()));
+        if(userDto.getContraseña() != null) {
+            userEntity.setContraseña(passwordEncoder.encode(userDto.getContraseña()));
+        }
+
 
         this.userRepository.save(userEntity);
     }
