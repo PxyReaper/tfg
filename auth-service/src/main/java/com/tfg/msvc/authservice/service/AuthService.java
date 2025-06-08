@@ -34,7 +34,7 @@ public class AuthService {
     }
     public ResponseDto logout(String cookieName){
         ResponseCookie cookie = jwtUtils.generateCleanResponseCookie(cookieName);
-        return new ResponseDto(null,cookie,"Sesión del usuario cerrada correctamente");
+        return new ResponseDto(null,cookie,"Sesión del usuario cerrada correctamente, borrando cookie");
     }
     public ResponseDto refreshToken(String refreshToken){
         String username = jwtUtils.getSubject(refreshToken);

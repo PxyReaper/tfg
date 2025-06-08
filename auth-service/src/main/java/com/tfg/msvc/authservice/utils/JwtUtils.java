@@ -92,11 +92,11 @@ public class JwtUtils {
     }
 
     public ResponseCookie generateRefreshTokenCookie(String refreshToken){
-        return generateCookie("REFRESH-TOKEN", refreshToken, "/api");
+        return generateCookie("REFRESH-TOKEN", refreshToken, "/");
     }
 
     public ResponseCookie generateCleanResponseCookie(String cookieName){
-        return ResponseCookie.from(cookieName, null).maxAge(0).build();
+        return ResponseCookie.from(cookieName, "").path("/").maxAge(0).build();
     }
 
     private ResponseCookie generateCookie(String cookieName, String cookieValue, String path){
@@ -104,8 +104,7 @@ public class JwtUtils {
                 .path(path)
                 .maxAge(Duration.ofDays(7))
                 .httpOnly(true)
-                .secure(true) // ✅ Añadido para HTTPS
-                .sameSite("Strict") // ✅ Protección CSRF
+                .secure(false)
                 .build();
     }
 }

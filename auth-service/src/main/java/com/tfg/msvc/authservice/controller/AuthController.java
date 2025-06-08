@@ -30,6 +30,7 @@ public class AuthController {
         if(cookie == null){
             return ResponseEntity.badRequest().build();
         }
+        System.out.println("Borrando cookie...");
         ResponseDto response = this.authService.logout("REFRESH-TOKEN");
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,response.getRefreshCookieToken().toString())
