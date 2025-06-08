@@ -55,6 +55,7 @@ public class ProductServiceImpl implements IProductService {
                 .frontPage(product.get().getPortada())
                 .leftPage(product.get().getLateralIzquierdo())
                 .rightPage(product.get().getLateralDerecho())
+                .upperPage(product.get().getArriba())
                 .build();
         ResponseDto<ProductDTO> response = ResponseFactory.generateSuccesResponse(productDTO,
                 "Producto encontrado correctamente", HttpStatus.SC_OK, null, null, null);
