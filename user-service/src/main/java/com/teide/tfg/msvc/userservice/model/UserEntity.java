@@ -39,6 +39,14 @@ public class UserEntity {
            joinColumns = @JoinColumn(name = "id_usuario",referencedColumnName = "id_usuario"),
            inverseJoinColumns = @JoinColumn(name = "id_rol",referencedColumnName = "id_rol")
    )
+
     private Set<RoleEntity> roles;
+   @Column(name = "pais")
+    private String pais;
+   @Column(name = "telefono_movil")
+    private String telefonoMovil;
+
+   @Column(name = "direccion")
+    private String direccion;
 
 }

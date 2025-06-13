@@ -98,21 +98,30 @@ public class ProductDAOImpl implements IProductDAO {
 
     @Override
     public boolean existsByIds(List<ProductDTO> productDTOS) {
-
         List<Long> productIds = productDTOS.stream().map(ProductDTO::getId).collect(Collectors.toList());
         List<Product> products = productRepository.findAllById(productIds);
-        if (products.isEmpty()) {
+
+        if (products.size() != productDTOS.size()) {
+            System.out.println("Algunos productos no existen en la base de datos");
             return false;
         }
-        for (int i = 0; i < products.size(); i++) {
-            if (!products.get(i).getName().equals(productDTOS.get(i).getName())
-                    || !products.get(i).getDescription().equals(productDTOS.get(i).getDescription()) || products.get(i).getPrice()
-                    .compareTo(productDTOS.get(i).getPrice()) != 0) {
-                return false;
 
+        // Opcional: puedes reordenar la lista 'products' para que coincida con el orden de los DTOs
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        for (ProductDTO dto : productDTOS) {
+            Product dbProduct = productMap.get(dto.getId());
+            if (dbProduct == null) {
+                System.out.println("Producto con ID " + dto.getId() + " no existe.");
+                return false;
             }
 
+            // Aquí puedes reconstruir el DTO si quieres usarlo después
+            // o simplemente ignorar name/description/price que viene del cliente
         }
+
         return true;
     }
+
 }

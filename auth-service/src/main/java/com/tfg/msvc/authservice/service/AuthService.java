@@ -63,7 +63,7 @@ public class AuthService {
             System.out.println("Body: " + user.getBody());
         }catch(FeignException ex){
             UserDto userDto = new UserDto(null,authGoogleDto.getGiven_name(),authGoogleDto.getFamily_name(),
-                    null,null,null,authGoogleDto.getEmail(),null,null,null,null,null);
+                    null,null,null,authGoogleDto.getEmail(),null,null,null,null,null,null,null,null);
             userClient.save(userDto);
         }
         UserDetails userAuthenticated = this.userService.loadUserByUsername(authGoogleDto.getEmail());

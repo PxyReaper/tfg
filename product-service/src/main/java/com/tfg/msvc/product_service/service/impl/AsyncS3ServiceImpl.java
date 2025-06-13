@@ -96,7 +96,7 @@ public class AsyncS3ServiceImpl implements IAsyncS3Service {
         return this.s3AsyncClient.listObjectsV2(listObjectsV2Request).thenApply(v -> {
 
             return    v.contents().stream()
-                    .map(generate -> this.generatePresignedInlineUrl(generate.key(),Duration.ofMinutes(30)))
+                    .map(generate -> this.generatePresignedInlineUrl(generate.key(),Duration.ofDays(7)))
                     .toList();
         });
     }

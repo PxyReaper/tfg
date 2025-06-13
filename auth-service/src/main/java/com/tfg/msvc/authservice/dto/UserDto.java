@@ -26,5 +26,8 @@ public class UserDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date fechaNacimiento;
     private Set<RoleDto> roles;
+    private String telefonoMovil;
+    private String direccion;
+    private String pais;
 
 }

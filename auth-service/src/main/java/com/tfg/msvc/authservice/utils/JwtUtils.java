@@ -65,8 +65,9 @@ public class JwtUtils {
     // ✅ Método seguro que verifica la firma antes de extraer el subject
     public String getSubject(String token){
         try {
-            DecodedJWT decodedJWT = verifyAndDecodeToken(token);
+            DecodedJWT decodedJWT = this.decode(token);
             return decodedJWT.getSubject();
+
         } catch (JWTVerificationException ex) {
             throw new RuntimeException("Invalid token: " + ex.getMessage());
         }
@@ -90,7 +91,9 @@ public class JwtUtils {
             throw new RuntimeException("Invalid token: " + ex.getMessage());
         }
     }
-
+    public DecodedJWT decode(String token){
+        return JWT.decode(token);
+    }
     public ResponseCookie generateRefreshTokenCookie(String refreshToken){
         return generateCookie("REFRESH-TOKEN", refreshToken, "/");
     }

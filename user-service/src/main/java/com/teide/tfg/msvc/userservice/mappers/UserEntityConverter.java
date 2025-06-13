@@ -22,7 +22,8 @@ public class UserEntityConverter {
         }).collect(Collectors.toSet()): new HashSet<>();
         return new UserDto(userEntity.getIdUsuario(),userEntity.getNombre(),userEntity.getApellido(),
                 userEntity.getCp(),userEntity.getCiudad(),userEntity.getProvincia(),userEntity.getEmail(),
-                userEntity.getUsuario(),userEntity.getContraseña(),userEntity.getGenero(),userEntity.getFechaNacimiento(),roleDto
+                userEntity.getUsuario(),userEntity.getContraseña(),userEntity.getGenero(),userEntity.getFechaNacimiento(),roleDto,
+                userEntity.getPais(),userEntity.getTelefonoMovil(),userEntity.getDireccion()
                 );
 
     }
@@ -36,6 +37,7 @@ public class UserEntityConverter {
         }).collect(Collectors.toSet()) : new HashSet<>();
         return new UserEntity(userDto.getIdUsuario(),userDto.getNombre(),userDto.getApellido(),userDto.getCp()
                 ,userDto.getCiudad(),userDto.getProvincia(),userDto.getEmail(),userDto.getUsuario(),
-                userDto.getContraseña(),userDto.getGenero(),userDto.getFechaNacimiento(),roleEntities);
+                userDto.getContraseña(),userDto.getGenero(),userDto.getFechaNacimiento(),roleEntities
+                ,userDto.getPais(),userDto.getTelefonoMovil(),userDto.getDireccion());
     }
 }

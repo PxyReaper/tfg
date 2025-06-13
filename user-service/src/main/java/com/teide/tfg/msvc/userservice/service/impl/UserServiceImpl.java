@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         if(!userEntity.isPresent()) {
             throw new UserNameNotFoundException("Usuario con el id " + id + " no encontrado");
         }
+
         UserEntity userUpdate =  UserEntityConverter.convertUserDtoToUserEntity(userDto);
         this.userRepository.save(userUpdate);
 
